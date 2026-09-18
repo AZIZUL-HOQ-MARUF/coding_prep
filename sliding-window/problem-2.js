@@ -1,4 +1,5 @@
 /**
+ * LeetCode 424
  * You're building a session analytics feature for a live chat platform.
  * Each character in a user's message log represents a distinct action
  * type performed during their session. The team wants to know the
