@@ -17,8 +17,7 @@ Problems are organized into folders by pattern:
 - `binary-search/`
 - `linked-lists/`
 - `trees-bfs-dfs/`
-- `graphs-bfs-dfs/` (includes `matrix-grid/`, `union-find/`)
-- `topological-sort/`
+- `graphs-bfs-dfs/` (includes `matrix-grid/`, `topological-sort/`, `union-find/`)
 - `backtracking/`
 - `dynamic-programming/`
 - `heaps-top-k/`
