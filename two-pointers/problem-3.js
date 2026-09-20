@@ -1,67 +1,88 @@
 /**
+ * LC: 15 - 3Sum
+ * 
+ * Scenario:
  * You're building a settlement-matching feature for an expense-splitting
  * app. Given a list of amounts owed or owed-to between group members
  * (positive numbers mean someone is owed money, negative numbers mean
  * they owe money), find every unique group of exactly three people whose
  * combined balances net out to exactly zero, so those three can settle
  * up directly with each other instead of going through the group ledger.
- * Duplicate groupings (the same three people, regardless of order)
+ * Duplicate groupings (the same three values, regardless of order)
  * should not appear more than once in the result.
  * 
- * @param {number[]} balances - number of ledgers, neg means owe , pos means owed
- * @return {number[[]]} results - triplets containing the values that sum up to 0, [[-1, 2, -1]]
+ * Pattern: Sorting + Fixed Pivot with Converging Two Pointers (3Sum)
+ * 
+ * Key Observations:
+ * 1. Brute-force checking all triplets takes O(N^3).
+ * 2. Sorting the array (O(N log N)) unlocks the two-pointer technique:
+ *    - Iterate `start` from 0 to n - 1 to fix the first element `balances[start]`.
+ *    - Use `left = start + 1` and `right = n - 1` to find pairs that sum to `-balances[start]`.
+ * 3. Direction logic:
+ *    - `total < 0`: Sum too small -> increment `left++`.
+ *    - `total > 0`: Sum too large -> decrement `right--`.
+ *    - `total === 0`: Found valid triplet -> push `[balances[start], balances[left], balances[right]]`.
+ * 4. Duplicate elimination:
+ *    - Outer loop: Skip duplicate pivot values (`if (start > 0 && balances[start] === balances[start - 1]) continue`).
+ *    - Inner loop: After recording a valid triplet, advance `left` past any duplicate values:
+ *      `while (left < right && balances[left] === balances[left - 1]) left++`.
+ * 
+ * @param {number[]} balances - Array of ledger balances (negative = owe, positive = owed)
+ * @return {number[][]} - Array of unique triplets summing to 0
  */
 function findSettlementGroups(balances) {
-	balances.sort((a, b) => a - b);
-	let n = balances.length, results = [];
+	if (!balances || balances.length < 3) return [];
 
+	// Step 1: Sort in ascending order
+	balances.sort((a, b) => a - b);
+	const n = balances.length;
+	const results = [];
+
+	// Step 2: Iterate and fix the first element of the triplet
 	for (let start = 0; start < n; start++) {
+		// Optimization: if the smallest fixed value is > 0, three positive numbers cannot sum to 0
+		if (balances[start] > 0) break;
+
+		// Skip duplicate pivot values
 		if (start > 0 && balances[start] === balances[start - 1]) continue;
 
-		let left = start + 1, right = n - 1;
+		let left = start + 1;
+		let right = n - 1;
 
-		while(left < right) {
-			let total = balances[start] + balances[left] + balances[right];
+		while (left < right) {
+			const total = balances[start] + balances[left] + balances[right];
 
-			if(total < 0) {
+			if (total < 0) {
 				left++;
 			} else if (total > 0) {
 				right--;
 			} else {
-				results.push([balances[start], balances[left++], balances[right]]);
+				results.push([balances[start], balances[left], balances[right]]);
+				left++;
+				right--;
 
-				while (left < right && balances[left] === balances[left-1]) {
+				// Skip duplicate values on the left pointer
+				while (left < right && balances[left] === balances[left - 1]) {
 					left++;
+				}
+				// Skip duplicate values on the right pointer
+				while (left < right && balances[right] === balances[right + 1]) {
+					right--;
 				}
 			}
 		}
 	}
 
 	return results;
-
 }
 
-// TC = O(n^2) — sort is O(n log n), dominated by outer*inner O(n)*O(n)
-// SC = O(1) auxiliary, excluding output
+// Complexity Analysis:
+// Time Complexity: O(N^2)
+//   - Sorting takes O(N log N).
+//   - Outer loop runs N times, and inner two-pointer search runs in O(N) per fixed element: O(N^2).
+// Space Complexity: O(1) auxiliary space (excluding output array), or O(N) depending on sorting implementation.
 
-
-/**
- * REASONING
- * - Brute-force triplet checking is O(n^3) — too slow. Sort first
- *   (O(n log n)) to unlock two pointers: fix one value (`start`), then
- *   scan the rest with `left`/`right` converging inward — O(n) per
- *   fixed value instead of O(n^2), giving O(n^2) total.
- * - `left` starts at start+1, not 0: anything before `start` was
- *   already tried as a `start` in an earlier iteration — reusing it
- *   just re-derives the same triplets in a different order.
- * - Direction logic: sorted order means increasing `left` only raises
- *   the sum, decreasing `right` only lowers it. Sum too low -> left++.
- *   Sum too high -> right--. Sum == 0 -> match.
- * - Duplicate elimination, two places:
- *     1) Outer loop skips a `start` equal to the previous `start` —
- *        already fully explored.
- *     2) After a match, `left` skips forward past repeats of the value
- *        just used, so the same pairing can't recur. `right` needs no
- *        explicit skip — the sum-too-high branch naturally pulls it
- *        inward on the next pass.
- */
+// Example Test Cases:
+// console.log(findSettlementGroups([-1, 0, 1, 2, -1, -4])); // Output: [[-1, -1, 2], [-1, 0, 1]]
+// console.log(findSettlementGroups([0, 1, 1]));             // Output: []
+// console.log(findSettlementGroups([0, 0, 0]));             // Output: [[0, 0, 0]]
