@@ -12,16 +12,16 @@ Each folder groups problems by the technique they exercise, so patterns can be r
 
 Problems are organized into folders by pattern:
 
-- `two-pointers/`
-- `sliding-window/`
+- `two-pointers/` ✅
+- `sliding-window/` ✅
 - `binary-search/`
 - `linked-lists/`
 - `trees-bfs-dfs/`
-- `graphs-bfs-dfs/` (includes `matrix-grid/`, `topological-sort/`, `union-find/`)
+- `graphs-bfs-dfs/` (includes `matrix-grid/` ✅, `topological-sort/` ✅, `union-find/`) ✅
 - `backtracking/`
 - `dynamic-programming/`
 - `heaps-top-k/`
-- `intervals/` (includes `prefix-sums/`)
+- `intervals/` (includes `prefix-sums/`) ✅
 - `monotonic-stack/`
 - `tries/`
 - `mock-interviews/`
