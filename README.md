@@ -22,7 +22,7 @@ Problems are organized into folders by pattern:
 - `dynamic-programming/`
 - `heaps-top-k/`
 - `intervals/` (includes `prefix-sums/`) ✅
-- `monotonic-stack/`
+- `stack/` (includes `monotonic-stack/` ✅) ✅
 - `tries/`
 - `mock-interviews/`
 
